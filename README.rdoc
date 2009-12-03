@@ -1,0 +1,37 @@
+= RVAN - Ruby VAN
+
+== Description
+Ruby wrapper for the Voter Activation Network (VAN) SOAP APIs.
+
+https://github.com/conorh/rvan
+
+== Install
+
+gem install rvan
+
+== Example Usage
+
+  require 'rvan'
+
+  vp = VAN::PersonService.new("api_key")
+
+  xml = Builder::XmlMarkup.new
+  xml.candidate do
+    xml.FirstName("First Name")
+    xml.LastName("Last Name")
+    xml.Emails do
+      xml.Email do
+        xml.Address("email")
+      end
+    end
+  end
+
+  result = vp.match_person('MatchOnly', xml.target!)
+
+  if result.success? and result.matched?
+    puts result.van_id
+  end
+
+== Authors
+
+Conor Hunt <conor@eastmedia.com>
