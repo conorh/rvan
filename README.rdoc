@@ -1,5 +1,7 @@
 = RVAN - Ruby VAN
 
+Code written under the aegis of East Media (http://www.eastmedia.com) an awesome Ruby on Rails development group.
+
 == Description
 Ruby wrapper for the Voter Activation Network (VAN) SOAP APIs.
 
