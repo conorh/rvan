@@ -8,14 +8,25 @@ module VAN
       parsed_xml["Body"]["ListEventsResponse"]["ListEventsResult"]["Events"]["Event"]
     end
   end
-  
+
   class EventResponse < Response
     def event
       parsed_xml["Body"]["Event"]
     end
   end
-  
+
   class EventService < Service
+
+    STATUSES = {
+      :completed => 2,
+      :confirmed => 7,
+      :declined => 4,
+      :invited => 6,
+      :left_message => 5,
+      :no_show => 3,
+      :scheduled => 1
+    }
+
     def initialize(api_key, options = {})
       super(api_key, "/Services/V3/EventService.asmx", options = {})
     end
@@ -43,7 +54,7 @@ module VAN
       end
       ListEventsResponse.new(make_request('ListEvents', message).body)
     end
-  
+
     def list_event_types
     end
   end

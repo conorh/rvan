@@ -4,7 +4,7 @@ require 'xmlsimple'
 module VAN
   class Service
     BASE_URL = "https://api.securevan.com"
-        
+
     def initialize(api_key, service_path, options = {})
       @api_key = api_key
       @service_path = service_path
@@ -15,7 +15,7 @@ module VAN
         "Accept" => nil,
         "Content-Type" => "text/xml; charset=utf-8",
         "SOAPAction" => "\"https://api.securevan.com/Services/V3/#{action_name}\""
-      }  
+      }
       http_client = Patron::Session.new
       http_client.base_url = BASE_URL
       http_client.insecure = true # SSL cert is invalid, have to ignore it
@@ -48,44 +48,34 @@ module VAN
   class Response
     attr_reader :raw_xml
     attr_reader :parsed_xml
-    
+
     def initialize(xml)
       @raw_xml = xml
       @parsed_xml = XmlSimple.xml_in(xml, {'ForceArray' => false})
       @parsed_xml = @parsed_xml["Envelope"] if @parsed_xml["Envelope"]
     end
-    
-    def success?   
+
+    def success?
       parsed_xml["Body"] && parsed_xml["Body"]["Fault"].nil?
     end
-    
+
     def error_string
       parsed_xml["Body"]["Fault"]["faultstring"]
     end
-    
+
     def error_detail
       parsed_xml["Body"]["Fault"]["detail"]
     end
-    
+
     def error_code
       parsed_xml["Body"]["Fault"]["faultcode"]
     end
-    
+
     def lookup_error_message
       code = error_code.match(/(\d+)/)[1] rescue nil
       ERROR[code] || "Could not find error message"
     end
   end
-
-  EVENT_STATUSES = {
-    :completed => 2,
-    :confirmed => 7,
-    :declined => 4,
-    :invited => 6,
-    :left_message => 5,
-    :no_show => 3,
-    :scheduled => 1
-  }
 
   ERRORS = {
     # 000 - Fatal Errors
@@ -98,17 +88,17 @@ module VAN
     '006' => 'HTTPSRequred',
     '007' => 'BadSession',
     '008' => 'LoginFailed',
-    
+
     # 100 - Invalid Requests
     '100' => 'InvalidParam',
     '101' => 'InvalidAPIKey',
     '102' => 'InvalidDBMode',
     '103' => 'InvalidReturnOption',
-    
+
     # 200 - Permissions
     '200' => 'PermissionsVANID',
     '205' => 'PermissionsSavedList',
-    
+
     # 300 - Invalid parameters
     '300' => 'InvalidVANID',
     '301' => 'InvalidPersonIDType',
@@ -122,12 +112,12 @@ module VAN
     '309' => 'InvalidUserID',
     '310' => 'InvalidVolunteerActivityID',
     '311' => 'InvalidVolunteerEventID',
-    
+
     # 400 - No records
     '400' => 'NotFound',
     '404' => 'NoResultsReturned',
-    
+
     # 500 - Utility problems
     '500' => 'AddressParse',
-  }  
+  }
 end
