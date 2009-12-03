@@ -1,0 +1,3 @@
+* Version 0.1
+
+- Initial version with wrappers for some methods of PersonService and EventService
